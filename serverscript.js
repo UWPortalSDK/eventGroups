@@ -30,11 +30,16 @@ function createEvent() {
 
 // Create group
 function createGroup() {
-	var groupId = args.Get("groupId");
     var title = args.Get("title");
     var description = args.Get("description");
-    var startTimestamp = args.Get("startTimestamp");
-    var endTimestamp = args.Get("endTimestamp");
-    var capacity = args.Get("capacity");
-    console.log(groupId);
+    var curUsername = user.Username;
+	var err = db.Execute('INSERT INTO groups (title, description) VALUES (@title, @description)');
+    console.log(err);
+}
+
+function subscribeToGroup() {
+    var curUsername = user.Username;
+    console.log(curUsername);
+    var groupId = args.Get("groupId");
+    var err = db.Execute('INSERT INTO user_groups (groupId, userId) VALUES (@groupId, @curUsername)');
 }
