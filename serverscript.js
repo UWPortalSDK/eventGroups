@@ -20,27 +20,35 @@ function createEvent() {
     var startTimestamp = args.Get("startTimestamp");
     var endTimestamp = args.Get("endTimestamp");
     var capacity = args.Get("capacity");
-    var curUsername = user.Username;
-    console.log(groupId);
-    console.log(user);
-    console.log(curUsername);
-    var err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity)');
-    return err;
+    var err;
+	if (args.Get("username") == user.Username)
+		err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity, createdBy) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity, @username)');
+	} else {
+        err = "Given username doesn't match with currently logged in user";
+    }
+	return err;
 }
 
 // Create group
 function createGroup() {
     var title = args.Get("title");
     var description = args.Get("description");
-    var curUsername = user.Username;
-	var err = db.Execute('INSERT INTO groups (title, description) VALUES (@title, @description)');
+    var err;
+    if (user.Username == args.get("username")) {
+		err = db.Execute('INSERT INTO groups (title, description) VALUES (@title, @description)');
+    } else {
+        err = "Given username doesn't match with currently logged in user";
+    }
 	return err;
 }
 
 function subscribeToGroup() {
     var groupId = args.Get("groupId");
+    var err;
     if (args.Get('username') == user.Username) {
-    	var err = db.Execute('INSERT INTO user_groups (groupId, userId) VALUES (@groupId, @username)');
+    	err = db.Execute('INSERT INTO user_groups (groupId, userId) VALUES (@groupId, @username)');
+    } else {
+        err = "Given username doesn't match with currently logged in user";
     }
     return err;
 }
