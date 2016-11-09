@@ -7,3 +7,8 @@ function getEvents() {
     }
     return queryResult;
 }
+
+// Create an event
+function createEvent() {
+	return args;
+}
