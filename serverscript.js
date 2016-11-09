@@ -1,7 +1,11 @@
 // Retreive data from the database
 function getEvents() {
     var queryResult = db.Execute('SELECT * FROM events');
-    var rows = JSON.parse(queryResult);
+    try {
+	    var rows = JSON.parse(queryResult);
+    } catch (e) {
+    	console.log(e);   
+    }
     if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
         return '{"status":"noTable"}';
     }
