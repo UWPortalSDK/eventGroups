@@ -10,5 +10,10 @@ function getEvents() {
 
 // Create an event
 function createEvent() {
-	return args;
+	var groupId = args.Get("groupId");
+    var title = args.Get("title");
+    var description = args.Get("description");
+    var startTimestamp = args.Get("startTimestamp");
+    var endTimestamp = args.Get("endTimestamp");
+    var capacity = args.Get("capacity");
 }
