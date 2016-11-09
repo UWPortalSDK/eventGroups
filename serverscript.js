@@ -18,8 +18,8 @@ function createEvent() {
     var capacity = args.Get("capacity");
     console.log(groupId);
     
-    db.Execute('INSERT INTO events VALUES(@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity, @currentUser');
-    return getData();
+    var err = db.Execute('INSERT INTO events VALUES(@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity, @currentUser');
+	console.log(err);
 }
 
 // Create group
