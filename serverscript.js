@@ -25,7 +25,7 @@ function createEvent() {
     console.log(user);
     console.log(curUsername);
     var err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity)');
-	console.log(err);
+    return err;
 }
 
 // Create group
@@ -34,12 +34,17 @@ function createGroup() {
     var description = args.Get("description");
     var curUsername = user.Username;
 	var err = db.Execute('INSERT INTO groups (title, description) VALUES (@title, @description)');
-    console.log(err);
+	return err;
 }
 
 function subscribeToGroup() {
-    var curUsername = user.Username;
-    console.log(curUsername);
     var groupId = args.Get("groupId");
-    var err = db.Execute('INSERT INTO user_groups (groupId, userId) VALUES (@groupId, @curUsername)');
+    if (args.Get('username') == user.Username) {
+    	var err = db.Execute('INSERT INTO user_groups (groupId, userId) VALUES (@groupId, @username)');
+    }
+    return err;
+}
+
+function getCurrentUser() {
+	return user;   
 }
