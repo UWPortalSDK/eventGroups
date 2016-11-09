@@ -17,7 +17,7 @@ function createEvent() {
     var endTimestamp = args.Get("endTimestamp");
     var capacity = args.Get("capacity");
     console.log(groupId);
-    
+    console.log(user);
     var err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity)');
 	console.log(err);
 }
