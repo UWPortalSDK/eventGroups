@@ -10,6 +10,8 @@ angular.module('portalApp')
 	
     // initialize the service
     eventGroupsFactory.init($scope);
+    
+    console.log("test");
 
 	// Show main view in the first column
 	$scope.portalHelpers.showView('eventGroupsMain.html', 1);
