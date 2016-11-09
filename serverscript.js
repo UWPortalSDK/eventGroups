@@ -19,6 +19,7 @@ function createEvent() {
     var curUsername = user.Username;
     console.log(groupId);
     console.log(user);
+    console.log(curUsername);
     var err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity)');
 	console.log(err);
 }
