@@ -16,9 +16,10 @@ function createEvent() {
     var startTimestamp = args.Get("startTimestamp");
     var endTimestamp = args.Get("endTimestamp");
     var capacity = args.Get("capacity");
+    var curUsername = user.Username;
     console.log(groupId);
     console.log(user);
-    var err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity, createdBy, createdAt) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity, @user.Username, NOW())');
+    var err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity, createdBy, createdAt) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity, @curUsername, NOW())');
 	console.log(err);
 }
 
