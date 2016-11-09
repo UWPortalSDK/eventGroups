@@ -53,6 +53,24 @@ function subscribeToGroup() {
     return err;
 }
 
+function expressInterestInEvent() {
+	var eventId = args.Get("eventId");
+	var type = args.Get("type");
+    var err;
+   	if (type != "Going" || type != "Maybe") {
+        err = "Wrong type";
+        return err;
+    }
+    
+    if (args.get("Username") == user.Username) {
+        err = "Given username doesn't match with currently logged in user";
+        return err;
+    }
+    
+    err = db.Execute('INSERT INTO user_events (eventId, userId, type) VALUES (@eventId, @username, @type)');
+    return err;
+}
+
 function getCurrentUser() {
 	return user;   
 }
