@@ -67,6 +67,13 @@ function expressInterestInEvent() {
         err = "Given username doesn't match with currently logged in user";
         return err;
     }
+   
+    if (type == "Going") {
+       err = db.Execute('UPDATE events SET goingCount = goingCount + 1 WHERE id = @eventId');
+    } else if (type == "Maybe") {
+       err = db.Execute('UPDATE events SET maybeCount = maybeCount + 1 WHERE id = @eventId');
+    }
+        
     
     err = db.Execute('INSERT INTO user_events (eventId, userId, type) VALUES (@eventId, @username, @type)');
     return err;
