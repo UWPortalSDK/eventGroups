@@ -31,7 +31,7 @@ function createGroup() {
     var title = args.Get("title");
     var description = args.Get("description");
     var err;
-    if (user.Username == args.get("username")) {
+    if (user.Username == args.Get("username")) {
 		err = db.Execute('INSERT INTO groups (title, description, createdBy) VALUES (@title, @description, @username)');
     } else {
         err = "Given username doesn't match with currently logged in user";
