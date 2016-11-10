@@ -1,11 +1,8 @@
 // Retreive data from the database
 function getEvents() {
+    console.log('getting events');
     var queryResult = db.Execute('SELECT * FROM events');
-    try {
-	    var rows = JSON.parse(queryResult);
-    } catch (e) {
-    	console.log(e);   
-    }
+    var rows = JSON.parse(queryResult);
     if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
         return '{"status":"noTable"}';
     }
@@ -21,7 +18,7 @@ function createEvent() {
     var endTimestamp = args.Get("endTimestamp");
     var capacity = args.Get("capacity");
     var err;
-	if (args.Get("username") == user.Username)
+	if (args.Get("username") == user.Username) {
 		err = db.Execute('INSERT INTO events (groupId, title, description, startTimestamp, endTimestamp, capacity, createdBy) VALUES (@groupId, @title, @description, @startTimestamp, @endTimestamp, @capacity, @username)');
 	} else {
         err = "Given username doesn't match with currently logged in user";
