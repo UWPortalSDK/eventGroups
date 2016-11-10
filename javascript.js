@@ -12,7 +12,7 @@ angular
         	username: 'rsnara',
             title: 'SE349',
             description: 'This is a really good group',
-        }).then(console.log, console.error);;
+        }).then((...args) => console.log('success create group', ...args), console.error);;
 
         // sf('createEvent', {
         //     username: 'rsnara',
@@ -44,88 +44,136 @@ angular
             $scope.detailsItem.value = item;		
             $scope.portalHelpers.showView('eventGroupsDetails.html', 2);
         }
+        
+        $scope.toggleEventDetails = function(event) {
+            console.log('toggling event', event);
+            if (event == $scope.selectedEvent) {
+               	$scope.showEventDetails = !$scope.showEventDetails;
+            } else {
+            	$scope.showEventDetails = true;
+            }
+            $scope.selectedEvent = event;
+        }
+        
+        $scope.createGroup = (group) => {
+        	sf('createGroup', {
+                username: 'rsnara',
+             	title: group.title,
+                description: group.description,
+            }).then(console.log);
+        };
+    
+    	$scope.searchForGroup = (query) => {
+        	console.log(query);
+        }
 
     })
     .component('eventCard', {
         bindings: {
-            event: '<'
+            event: '<',
+            onClick: '&',
         },
         controller: class Ctrl {
 			constructor(portalHelpers) {
 				this.ph = portalHelpers;
 			}
-            
-            viewElement() {
-				
+               
+            formatDate(date) {
+    			const time = Number(date.match(/\/Date\((\d+)\)\//)[1]);
+				return moment(time).format('LLLL');
 			}
 		},
         template: `
-            <widget-row clickable ng-click="$ctrl.viewEvent()" class="bg-black">
-				<uib-accordion class="pb0">
-                    <div uib-accordion-group is-open="true">
-                        <uib-accordion-heading>
-                            {{$ctrl.event.title}}
-                        </uib-accordion-heading>
-						{{$ctrl.event.description}}
+            <widget-row clickable ng-click="$ctrl.onClick({event: $ctrl.event})" class="flex items-center">
+				<div class="flex-auto">
+                    <div>
+                        {{ $ctrl.event.title }}
                     </div>
-				<uib-accordion>
+                    <div>
+                        {{ $ctrl.formatDate($ctrl.event.startTimestamp) }}
+                    </div>
+				</div>
+				<div>
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</div>
             </widget-row>
         `
+    })
+    .component('groupCreatorForm', {
+    	bindings: {
+        	onSubmit: '&',
+        },
+        controller: class Ctrl {
+    		submit($event) {
+        		this.onSubmit({
+    				group: {
+    					title: this.title,
+        				description: this.description,
+    				},
+    			});
+				$event.preventDefault();
+				this.title = '';
+				this.description = '';
+    		}	
+    	},
+        template: `
+			<form class="flex flex-column" ng-submit="$ctrl.submit($event)">
+                <label>
+                	<span class="sr-only">Title</span>
+                	<input  ng-model="$ctrl.title"
+                            type="text"
+                            class="input"
+                            style="margin-bottom:0"
+                            placeholder="Title"/>
+                </label>
+                <label>
+                    <span class="sr-only">Description</span>
+                    <input 	ng-model="$ctrl.description"
+                            type="text"
+                            class="input"
+                            style="margin-bottom:0"
+                            placeholder="Description"/>
+                </label>
+
+                <button type="submit" class="btn btn-default">Create group</button>
+            </form>
+		`
+    })
+    .component('searchForm', {
+    	bindings: {
+        	onSearch: '&',
+            placeholder: '@',
+        },
+        controller: class Ctrl {
+    		submit($event) {
+    			$event.preventDefault();
+        		this.onSearch({
+    				query: this.query,
+    			});
+				this.query = "";
+    		}
+    	},
+        template: `
+			<form class="flex" ng-submit="$ctrl.submit($event)">
+                <input
+					ng-model="$ctrl.query"
+					type="text"
+					class="input flex-auto"
+					style="margin-bottom:0"
+					placeholder="{{$ctrl.placeholder}}"/>
+                <button class="btn btn-default" type="submit">
+                	<i class="glyphicon glyphicon-search"></i>
+                </button>
+            </form>
+		`
     });
 
 const DEPS = [
-	'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.22.1/ramda.min.js'
+	'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.22.1/ramda.min.js',
+    'http://momentjs.com/downloads/moment.min.js',
 ];
 
 deps.forEach(injectDep);
-
-(() => {
-    var basscssAddons = [
-        'responsive-margin', 'responsive-padding', 'forms', 'btn',
-        'btn-outline', 'btn-primary', 'btn-sizes', 'colors',
-        'background-colors', 'background-images', 'border-colors', 'darken',
-        'lighten', 'input-range', 'progress', 'all', 'media-object',
-        'highlight', 'highlight-dark', 'border-colors'
-    ];
-    function createBasscssAddonLink(addon) {
-        if (['forms'].includes(addon)) {
-            return `https://npmcdn.com/basscss-${addon}/index.css`;
-        }
-        return 'https://npmcdn.com/basscss-' + addon + '/css/' + addon + '.css';
-    }
-    function fetchCSS(link) {
-        return fetch(link).then((response) => response.text());
-    }
-    function createDOMElement(name, props) {
-        return Object.assign(document.createElement(name), props);
-    }
-    function createStyleElement(css) {
-        return createDOMElement('style', {
-            type: 'text/css',
-            innerHTML: css,
-        });
-    }
-    function fetchBasscssWithAddons() {
-        var links = [
-            'https://npmcdn.com/basscss/css/basscss.min.css',
-            ...basscssAddons.map(createBasscssAddonLink)
-        ];
-        return Promise
-            .all(links.map(fetchCSS))
-            .then((css) => css.join('\n'));
-    }
-    function injectCSS(css) {
-        document.head.appendChild(createStyleElement(css));
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchBasscssWithAddons()
-            .then(injectCSS)
-            .then(
-            () => console.log('Loaded Basscss!'),
-            (error) => console.error('Failed to load Basscss!', error)
-        );
-    });
-})();
 
 function injectDep(src) {
 	const script = document.createElement('script');
