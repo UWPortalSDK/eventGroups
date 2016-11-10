@@ -6,8 +6,11 @@
 		</widget-cell>
 	</widget-row>
     
-    <event-card ng-repeat="event in events" event="event">
-    </event-card>
+<!--     <widget-row ng-repeat="event in events">
+        {{event}} -->
+        <event-card ng-repeat="event in events" event="event">
+        </event-card>
+<!--     </widget-row> -->
 		
 <!-- 	<widget-row ng-repeat="item in items.value" clickable ng-click="showDetails(item)">
 		<widget-cell fill>
@@ -21,3 +24,7 @@
 		</widget-cell>
 	</widget-row> -->
 </script>
+<!-- 
+<script type="text/ng-template" id="event-page">
+	This is an events page!
+</script> -->
