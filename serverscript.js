@@ -76,7 +76,8 @@ function expressInterestInEvent() {
 }
 
 function searchGroups() {
-	var queryResult = db.Execute("SELECT * FROM groups WHERE title CONTAINS(title,@query)");
+    console.log(args.Get('query'));
+	var queryResult = db.Execute("SELECT * FROM groups WHERE title LIKE @query;");
     var rows = JSON.parse(queryResult);
     if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
         return '{"status":"noTable"}';
