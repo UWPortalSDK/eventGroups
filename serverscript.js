@@ -82,6 +82,7 @@ function searchGroups() {
 	var queryResult = db.Execute("SELECT * FROM groups, user_groups WHERE groups.id = user_groups.groupId AND user_groups.userId <> @username AND title LIKE @query;");
     var rows = JSON.parse(queryResult);
     if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
+        console.log(rows[0].Error);
         return '{"status":"noTable"}';
     }
     
