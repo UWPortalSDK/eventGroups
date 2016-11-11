@@ -10,25 +10,34 @@ angular
     	sf('getCurrentUser').then(init, trace('getCurrentUser failure'));
     
     	function init(user) {
-        	sf('getEvents')
-            	.then(trace('getEvents'))
-                .then(events => $scope.events = events);
+        	$scope.getEvents = getEvents;
+            $scope.createGroup = createGroup;
+            $scope.searchForGroup = searchForGroup;
+            $scope.subscribeToGroup = subscribeToGroup;
             
-            $scope.createGroup = (group) => {
-                sf('createGroup', {
-                    username: user.Username,
-                    title: group.title,
-                    description: group.description,
-                }).then(trace('createGroup'));
-            };
-
-            $scope.searchForGroup = (query) => {
-                sf('searchGroups', { query: `%${query}%` })
-                    .then(trace('searchGroup'))
-                	.then((groups) => $scope.groups = groups);
+            getEvents();
+            
+            function getEvents() {
+            	return sf('getEvents')
+            		.then(trace('getEvents'))
+                	.then(events => $scope.events = events);
             }
             
-            $scope.subscribeToGroup = (group) => {
+            function createGroup(group) {
+            	return sf('createGroup', {
+                            username: user.Username,
+                            title: group.title,
+                            description: group.description,
+                        }).then(trace('createGroup'));
+            }
+            
+            function searchForGroup(query) {
+            	return sf('searchGroups', { query: `%${query}%` })
+                        .then(trace('searchGroup'))
+                        .then((groups) => $scope.groups = groups);
+            }
+                
+            function subscribeToGroup(group) {
                 console.log('subscribingToGroup', group);
             	sf('subscribeToGroup', {
                     username: user.Username,
