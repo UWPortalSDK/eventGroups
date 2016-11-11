@@ -35,9 +35,12 @@ angular
             }
             
             function searchForGroup(query) {
-            	return sf('searchGroups', { query: `%${query}%` })
-                        .then(trace('searchGroup'))
-                        .then((groups) => $scope.groups = groups);
+            	return sf('searchGroups', {
+                    username: user.Username,
+                    query: `%${query}%`,
+                })
+                    .then(trace('searchGroup'))
+                    .then((groups) => $scope.groups = groups);
             }
                 
             function subscribeToGroup(group) {
