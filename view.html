@@ -2,7 +2,7 @@
 <script type="text/ng-template" id="eventGroupsMain.html">
     
     <uib-tabset active="active">
-        <uib-tab index="0" heading="Events">
+        <uib-tab index="0" heading="Events" ng-click="getEvents()">
         	<div class="flex px1">
                 <div class="transition-50" ng-class="{'w-100': !showEventDetails, 'w-50': showEventDetails}">
                     <event-card ng-repeat="event in events" event="event" on-click="toggleEventDetails(event)">
