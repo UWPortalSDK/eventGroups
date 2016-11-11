@@ -5,6 +5,7 @@ angular
 	.controller('eventGroupsCtrl', function ($scope, $http, $q, portalHelpers) {
     	const sf = $scope.portalHelpers.invokeServerFunction;
         $scope.events = [];
+    	$scope.groups = [];
 
     	sf('getCurrentUser').then(init, trace('getCurrentUser failure'));
     
@@ -15,16 +16,25 @@ angular
             
             $scope.createGroup = (group) => {
                 sf('createGroup', {
-                    username: 'rsnara',
+                    username: user.Username,
                     title: group.title,
                     description: group.description,
                 }).then(trace('createGroup'));
             };
 
             $scope.searchForGroup = (query) => {
-                sf('searchGroups', {
-                    query: query,
-                }).then(trace('searchGroup'));
+                sf('searchGroups', { query: `%${query}%` })
+                    .then(trace('searchGroup'))
+                	.then((groups) => $scope.groups = groups);
+            }
+            
+            $scope.subscribeToGroup = (group) => {
+                console.log('subscribingToGroup', group);
+            	sf('subscribeToGroup', {
+                    username: user.Username,
+                    groupId: group.id,
+                }).then(trace('subscribeToGroup'));
+                	
             }
         }
 
@@ -166,6 +176,18 @@ angular
                 	<i class="glyphicon glyphicon-search"></i>
                 </button>
             </form>
+		`
+    })
+    .component('groupCard', {
+    	bindings: {
+        	group: '<',
+            onClick: '&',
+        },
+        template: `
+			<widget-row clickable ng-click="$ctrl.onClick({ group: $ctrl.group })">
+				<div> <b>{{$ctrl.group.title}} </b> </div>
+				<div>{{$ctrl.group.description}}</div>
+			</widget-row>
 		`
     });
 
