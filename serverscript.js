@@ -1,11 +1,7 @@
 // Retreive data from the database
 function getEvents() {
     console.log('getting events');
-    var queryResult = db.Execute(`
-		SELECT *
-		FROM events
-		WHERE startTimestamp > GETDATE()
-	`);
+    var queryResult = db.Execute('SELECT * FROM events WHERE startTimestamp > GETDATE()');
     var rows = JSON.parse(queryResult);
     if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
         return '{"status":"noTable"}';
@@ -80,7 +76,7 @@ function expressInterestInEvent() {
 }
 
 function searchGroups() {
-	var queryResult = db.Execute("SELECT * FROM groups WHERE title CONTAINS(title,'@query')");
+	var queryResult = db.Execute("SELECT * FROM groups WHERE title CONTAINS(title,@query)");
     var rows = JSON.parse(queryResult);
     if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
         return '{"status":"noTable"}';
