@@ -1,23 +1,39 @@
 <!-- Primary template that will get shown when widget loads -->
-<script type="text/ng-template" id="eventGroupsMain.html"> 
-	<widget-row>
-		<widget-cell>
-			<h2>{{data.value.message}}</h2>
-		</widget-cell>
-	</widget-row>
+<script type="text/ng-template" id="eventGroupsMain.html">
     
-    <event-card ng-repeat="event in events" event="event">
-    </event-card>
-		
-<!-- 	<widget-row ng-repeat="item in items.value" clickable ng-click="showDetails(item)">
-		<widget-cell fill>
-			<span class="itemName">{{item.title}}</span>
-			<span ng-repeat= "tag in item.tags" class="label label-success">
-				{{tag}}
-			</span>
-		</widget-cell>
-		<widget-cell>
-			<widget-icon name="angle-right"></widget-icon>
-		</widget-cell>
-	</widget-row> -->
+    <uib-tabset active="active">
+        <uib-tab index="0" heading="Events" ng-click="getEvents()">
+        	<div class="flex px1">
+                <div class="transition-50" ng-class="{'w-100': !showEventDetails, 'w-50': showEventDetails}">
+                    <event-card ng-repeat="event in events" event="event" on-click="toggleEventDetails(event)">
+                    </event-card>
+                </div>
+
+                <div
+                    ng-if="showEventDetails"
+                    class="transition-50 flex-auto p1"
+                    ng-class="{'w-0': showEventDetails}">
+                    {{selectedEvent.title}}
+                </div>
+            </div>
+        </uib-tab>
+        
+        <uib-tab index="1" heading="Create Group">
+            <div class="p1">
+        		<group-creator-form on-submit="createGroup(group)"></group-creator-form>
+            </div>
+        </uib-tab>
+        
+        <uib-tab index="2" heading="Subscribe">
+            <div class="p1">
+                <search-form placeholder="Search for group" on-search="searchForGroup(query)">
+                </search-form>
+                
+                <group-card group="group" ng-repeat="group in groups" on-click="subscribeToGroup(group)">
+                </group-card>
+            </div>
+        </uib-tab>
+        
+    </uib-tabset>
+
 </script>
