@@ -30,7 +30,9 @@ angular
                             username: user.Username,
                             title: group.title,
                             description: group.description,
-                        }).then(trace('createGroup'));
+                        })
+                    .then(trace('createGroup'))
+                	.then(() => subscribeToGroup(group));
             }
             
             function searchForGroup(query) {
