@@ -31,8 +31,7 @@ angular
                             title: group.title,
                             description: group.description,
                         })
-                    .then(trace('createGroup'))
-                	.then(() => subscribeToGroup(group));
+                    .then(trace('createGroup'));
             }
             
             function searchForGroup(query) {
@@ -203,8 +202,23 @@ angular
         },
         template: `
 			<widget-row clickable ng-click="$ctrl.onClick({ group: $ctrl.group })">
-				<div> <b>{{$ctrl.group.title}} </b> </div>
+				<div class="bold">{{$ctrl.group.title}}</div>
 				<div>{{$ctrl.group.description}}</div>
+			</widget-row>
+		`
+    })
+    .component('expandableGroupCard', {
+    	bindings: {
+        	group: '<',
+            onClick: '&',
+        },
+        template: `
+			<widget-row clickable ng-click="$ctrl.onClick({ group: $ctrl.group })" class="flex space-between">
+				<div class="flex-auto">
+					<div class="bold">{{$ctrl.group.title}}</div>
+					<div>{{$ctrl.group.description}}</div>
+				</div>
+				<button class="btn btn-primary">+</button>
 			</widget-row>
 		`
     });
