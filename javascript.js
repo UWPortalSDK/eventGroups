@@ -6,6 +6,7 @@ angular
     	const sf = $scope.portalHelpers.invokeServerFunction;
         $scope.events = [];
     	$scope.groups = [];
+    	$scope.myGroups = [];
 
     	sf('getCurrentUser').then(init, trace('getCurrentUser failure'));
     
@@ -14,6 +15,7 @@ angular
             $scope.createGroup = createGroup;
             $scope.searchForGroup = searchForGroup;
             $scope.subscribeToGroup = subscribeToGroup;
+            $scope.getMyGroups = getMyGroups;
             
             getEvents();
             
@@ -39,11 +41,17 @@ angular
                 
             function subscribeToGroup(group) {
                 console.log('subscribingToGroup', group);
-            	sf('subscribeToGroup', {
+            	return sf('subscribeToGroup', {
                     username: user.Username,
                     groupId: group.id,
                 }).then(trace('subscribeToGroup'));
-                	
+            }
+            
+            function getMyGroups() {
+                console.log('getting my groups');
+            	return sf('getMyGroups', {username: user.Username})
+                	.then(trace('getMyGroups'))
+                	.then((groups) => $scope.myGroups = groups);
             }
         }
 
