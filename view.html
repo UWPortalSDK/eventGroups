@@ -28,6 +28,9 @@
             <div class="p1">
                 <search-form placeholder="Search for group" on-search="searchForGroup(query)">
                 </search-form>
+                
+                <group-card group="group" ng-repeat="group in groups" on-click="subscribeToGroup(group)">
+                </group-card>
             </div>
         </uib-tab>
         
