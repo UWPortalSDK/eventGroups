@@ -1,18 +1,32 @@
+const trace = (name) => (arg) => (console.log(name, arg), arg);
+
 angular
     .module('portalApp')
 	.controller('eventGroupsCtrl', function ($scope, $http, $q, portalHelpers) {
     	const sf = $scope.portalHelpers.invokeServerFunction;
         $scope.events = [];
 
-       	sf('getEvents')
-            .then((events) => $scope.events = events)
-            .catch(console.error);
+    	sf('getCurrentUser').then(init, trace('getCurrentUser failure'));
     
-    	sf('createGroup', {
-        	username: 'rsnara',
-            title: 'SE349',
-            description: 'This is a really good group',
-        }).then((...args) => console.log('success create group', ...args), console.error);;
+    	function init(user) {
+        	sf('getEvents')
+            	.then(trace('getEvents'))
+                .then(events => $scope.events = events);
+            
+            $scope.createGroup = (group) => {
+                sf('createGroup', {
+                    username: 'rsnara',
+                    title: group.title,
+                    description: group.description,
+                }).then(trace('createGroup'));
+            };
+
+            $scope.searchForGroup = (query) => {
+                sf('searchGroups', {
+                    query: query,
+                }).then(trace('searchGroup'));
+            }
+        }
 
         // sf('createEvent', {
         //     username: 'rsnara',
@@ -54,19 +68,6 @@ angular
             }
             $scope.selectedEvent = event;
         }
-        
-        $scope.createGroup = (group) => {
-        	sf('createGroup', {
-                username: 'rsnara',
-             	title: group.title,
-                description: group.description,
-            }).then(console.log);
-        };
-    
-    	$scope.searchForGroup = (query) => {
-        	console.log(query);
-        }
-
     })
     .component('eventCard', {
         bindings: {
