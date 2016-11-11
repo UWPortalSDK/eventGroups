@@ -33,6 +33,8 @@ function createGroup() {
     var err;
     if (user.Username == args.Get("username")) {
 		err = db.Execute('INSERT INTO groups (title, description, createdBy) VALUES (@title, @description, @username)');
+        var queryResult = db.Execute('SELECT SCOPE_IDENTITY() AS id');
+        return queryResult;
     } else {
         err = "Given username doesn't match with currently logged in user";
     }
