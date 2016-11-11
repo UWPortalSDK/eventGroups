@@ -16,8 +16,14 @@ angular
             $scope.searchForGroup = searchForGroup;
             $scope.subscribeToGroup = subscribeToGroup;
             $scope.getMyGroups = getMyGroups;
+            $scope.createEvent = createEvent;
             
             getEvents();
+            
+            function createEvent(event) {
+            	return sf('createEvent', Object.assign({username: user.Username}, event))
+                	.then(trace('createEvent'));
+            }
             
             function getEvents() {
             	return sf('getEvents')
@@ -30,13 +36,17 @@ angular
                             username: user.Username,
                             title: group.title,
                             description: group.description,
-                        }).then(trace('createGroup'));
+                        })
+                    .then(trace('createGroup'));
             }
             
             function searchForGroup(query) {
-            	return sf('searchGroups', { query: `%${query}%` })
-                        .then(trace('searchGroup'))
-                        .then((groups) => $scope.groups = groups);
+            	return sf('searchGroups', {
+                    username: user.Username,
+                    query: `%${query}%`,
+                })
+                    .then(trace('searchGroup'))
+                    .then((groups) => $scope.groups = groups);
             }
                 
             function subscribeToGroup(group) {
@@ -54,27 +64,6 @@ angular
                 	.then((groups) => $scope.myGroups = groups);
             }
         }
-
-        // sf('createEvent', {
-        //     username: 'rsnara',
-        //     title: 'Horse',
-        //     groupId: 1,
-        //     description: 'Watch horses do horse stuff',
-        //     startTimestamp: toTimestamp(new Date()),
-        //     endTimestamp: toTimestamp(new Date()),
-        //     capacity: 24,
-        // }).then(console.log);
-
-        // API.createGroup({
-        // 	title: 'SE380',
-        //     description: 'Feedback',
-        // }).then(console.log);
-
-        // API.subscribeToGroup({
-        //     groupId: 1
-        // }).then((x) => console.log('subscribe to group', x));
-        // console.log('MAAZ: cur user', user);
-        // initialize the service
 
         // Show main view in the first column
         $scope.portalHelpers.showView('eventGroupsMain.html', 1);
@@ -201,8 +190,73 @@ angular
         },
         template: `
 			<widget-row clickable ng-click="$ctrl.onClick({ group: $ctrl.group })">
-				<div> <b>{{$ctrl.group.title}} </b> </div>
+				<div class="bold">{{$ctrl.group.title}}</div>
 				<div>{{$ctrl.group.description}}</div>
+			</widget-row>
+		`
+    })
+    .component('expandableGroupCard', {
+    	bindings: {
+        	group: '<',
+            onCreateEvent: '&',
+        },
+        controller: class Ctrl {
+    		submit(event) {
+    			event.preventDefault();
+        		this.onCreateEvent({
+        			event: {
+                        groupID: this.group.id,
+                        title: this.eventTitle,
+                        description: this.eventDescription,
+                        startTimestamp: toTimestamp(this.eventStartDate),
+                        endTimestamp: toTimestamp(this.eventEndDate),
+        				capacity: this.eventCapacity,
+    				}
+        		});
+    		}
+    	},
+        template: `
+			<widget-row ng-click="$ctrl.onClick({ group: $ctrl.group })">
+				<div class="flex space-between">
+                    <div class="flex-auto">
+                        <div class="bold">{{$ctrl.group.title}}</div>
+                        <div>{{$ctrl.group.description}}</div>
+                    </div>
+                    <button class="btn btn-primary" ng-click="$ctrl.open = !$ctrl.open">+</button>
+				</div>
+				<div class="py1" ng-if="$ctrl.open">
+					<form class="flex flex-column p1 bg-gray" ng-submit="$ctrl.submit($event)">
+                        <label>
+                            <span class="sr-only">Title</span>
+                            <input  ng-model="$ctrl.eventTitle"
+                                    type="text"
+                                    class="input"
+                                    style="margin-bottom:0"
+                                    placeholder="Title"/>
+                        </label>
+                        <label>
+                            <span class="sr-only">Description</span>
+                            <input 	ng-model="$ctrl.eventDescription"
+                                    type="text"
+                                    class="input"
+                                    style="margin-bottom:0"
+                                    placeholder="Description"/>
+                        </label>
+						<label>
+							<span class="sr-only">Capacity</span>
+							<input type="number" placeholder="Capacity" class="input" style="margin-bottom:0" ng-model="$ctrl.eventCapacity">
+						</label>
+						<label>
+							<span class="white">Start:</span>
+							<input type="datetime-local" class="input gray" style="margin-bottom:0" ng-model="$ctrl.eventStartDate">
+						</label>
+						<label>
+							<span class="white">End:</span>
+							<input type="datetime-local" class="input gray" style="margin-bottom:0" ng-model="$ctrl.eventEndDate">
+						</label>
+                        <button type="submit" class="btn btn-default">Create event</button>
+                    </form>
+				</div>
 			</widget-row>
 		`
     });
