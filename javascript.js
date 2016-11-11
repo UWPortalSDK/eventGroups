@@ -170,7 +170,6 @@ angular
         		this.onSearch({
     				query: this.query,
     			});
-				this.query = "";
     		}
     	},
         template: `
