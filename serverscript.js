@@ -86,6 +86,20 @@ function searchGroups() {
     return queryResult;
 }
 
+function getMyGroups() {
+	if (user.Username != args.Get("username")) {
+   		return "username doesn't match";
+    }
+    
+	var queryResult = db.Execute("SELECT * FROM groups, user_groups WHERE groups.id = user_groups.groupId AND user_groups.userId = @username");
+    var rows = JSON.parse(queryResult);
+    if (rows.length > 0 && typeof rows[0].Error != 'undefined') {
+        return '{"status":"noTable"}';
+    }
+    
+    return queryResult;
+}
+
 function getCurrentUser() {
 	return user;   
 }
